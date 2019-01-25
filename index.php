@@ -3,5 +3,8 @@
 <head>
     <link rel="stylesheet" href="./css/style.css"/>
 </head>
-<body></body>
+<body>
+
+	<p>Fonctionnalité qui pue</p>
+</body>
 </html>
