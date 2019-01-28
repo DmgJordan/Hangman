@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-function skip_accents($str, $charset = 'utf-8') {
+function skip_accents($str, $charset = 'utf-8') {                               //
 
     $str = htmlentities($str, ENT_NOQUOTES, $charset);
 
@@ -12,7 +12,7 @@ function skip_accents($str, $charset = 'utf-8') {
     return $str;
 }
 
-if (isset($_POST['motAtrouver'])) {
+if (isset($_POST['motAtrouver'])) {                                 
     $unionTcheck = strpos($_POST['motAtrouver'], "-");
     $apostropheTcheck = strpos($_POST['motAtrouver'], "'");
     $mot = skip_accents($_POST['motAtrouver']);
@@ -117,7 +117,7 @@ foreach ($letterArray as $letter) {
                 $('#' + lettre + '').attr('disabled', 'true');
 
                 $.post(
-                        "test.php",
+                        "JsonTransition.php",
                         {
                             letter: $(this).text()
                         },
@@ -132,7 +132,7 @@ foreach ($letterArray as $letter) {
                             var MajMot = mot.toUpperCase();
                             var splitMot = MajMot.split("");
                             i = 0;
-                            b = 0;
+                            letterRepetition = 0;
                             for (let test in splitMot) {
                                 if (splitMot[test] === "-" || splitMot[test] === "'") {
                                     lgtMot--;
@@ -141,7 +141,7 @@ foreach ($letterArray as $letter) {
                                 if (splitMot[test] === lettre) {
 
                                     document.getElementById(i).innerHTML = splitMot[test];
-                                    b++;
+                                    letterRepetition++;
                                     x = true;
 
                                 }
@@ -155,7 +155,7 @@ foreach ($letterArray as $letter) {
                                     $('button').attr('disabled', 'true');
                                 }
                             } else {
-                                winTcheck += b;
+                                winTcheck += letterRepetition;
                             }
                             if (winTcheck === lgtMot) {
                                 $('#requestajax').html('Gagné');
