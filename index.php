@@ -16,11 +16,12 @@ session_start();
         <div class="container">
             <!-- Page Content goes here -->
             <h2 class="center blue-text text-darken-2">Le Pendu</h2>
-            <span class="flow-text">Veuillez entrer un mot : </span>
+            <span class="flow-text">Entrez un mot pour jouer : </span>
             <form method="post" action="pendu.php">
                 <input type="text" name="motAtrouver" pattern="[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ\-\']+" required />
                 <input class=" btn waves-effect waves-light card-panel blue darken-2" type="submit" id="send" value="Envoyer" />
             </form>
         </div>
     </body>
+
 </html>
