@@ -1,30 +1,38 @@
 <?php
 session_start();
 
-function skip_accents( $str, $charset='utf-8' ) {
- 
-    $str = htmlentities( $str, ENT_NOQUOTES, $charset );
-    
-    $str = preg_replace( '#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str );
-    $str = preg_replace( '#&([A-za-z]{2})(?:lig);#', '\1', $str );
-    $str = preg_replace( '#&[^;]+;#', '', $str );
-    
+function skip_accents($str, $charset = 'utf-8') {
+
+    $str = htmlentities($str, ENT_NOQUOTES, $charset);
+
+    $str = preg_replace('#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str);
+    $str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str);
+    $str = preg_replace('#&[^;]+;#', '', $str);
+
     return $str;
 }
 
-
-
 if (isset($_POST['motAtrouver'])) {
+    $unionTcheck = strpos($_POST['motAtrouver'], "-");
     $_SESSION['mot'] = skip_accents($_POST['motAtrouver']);
 }
 
 
 $nblettre = strlen($_POST['motAtrouver']);
 $letterArray = array();
-while ($nblettre != 0) {
-    $nblettre--;
-    array_push($letterArray, "_ ");
+$i=0;
+while ($i != $nblettre) {
+
+    
+    $letterArray[$i]= "_ ";
+    if (isset($unionTcheck)) {
+        if ($unionTcheck == $i) {
+            $letterArray[$i] = "-";
+        }
+    }
+    $i++;
 }
+var_dump($letterArray);
 $hiddenWord = "";
 $i = 0;
 foreach ($letterArray as $letter) {
@@ -93,22 +101,21 @@ echo $hiddenWord;
                             var letter = $(this).attr('id');
                             var texte = "";
 
-                            while (lgtMot != 0) {
-                                lgtMot--;
-                               
 
-                            }
                             //$('#requestajax').html(texte)
                             var MajMot = mot.toUpperCase();
                             var splitMot = MajMot.split("");
                             i = 0;
-                            b=0;
+                            b = 0;
                             for (let test in splitMot) {
-                                
+                                if (splitMot[test]==="-"){
+                                    lgtMot--;
+                                }
+
                                 if (splitMot[test] == lettre) {
 
                                     document.getElementById(i).innerHTML = splitMot[test];
-                                    
+
                                     b++;
 
                                     x = true;
@@ -125,7 +132,7 @@ echo $hiddenWord;
                             } else {
                                 winTcheck += b;
                             }
-                            if (winTcheck === i) {
+                            if (winTcheck === lgtMot) {
                                 $('#requestajax').html('Gagné');
                                 $('button').attr('disabled', 'true');
                             }
