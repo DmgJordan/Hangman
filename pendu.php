@@ -14,13 +14,22 @@
                 $_SESSION['mot']=$_POST['motAtrouver'];
             }
             
-
-//$nblettre = strlen($_POST['motAtrouver']);
-//while ($nblettre != 0){
-//            $nblettre--;
-//            echo "_ ";
-//        } 
-
+            
+        $nblettre = strlen($_POST['motAtrouver']);
+        $letterArray= array();
+        while ($nblettre != 0){
+            $nblettre--;
+            array_push($letterArray, "_ ");
+        }
+        $hiddenWord = "";
+        $i=0;
+        foreach($letterArray as $letter){
+            $hiddenWord .= "<p id=".$i.">$letter</p>";
+            $i++;
+        }
+        echo $hiddenWord;
+        var_dump($letterArray);
+        
             
             
         ?>
@@ -72,13 +81,17 @@
                     texte = texte + "_ ";
                     
                 }
-                $('#requestajax').html(texte)
+                //$('#requestajax').html(texte)
                 var MajMot = data.toUpperCase();
                 var splitMot = MajMot.split("");
+                i=0;
                 for (let test in splitMot){
-
+                    i++;
                     if (splitMot[test]==lettre){
-                        console.log(splitMot[test])
+                        console.log(splitMot[test]);
+                        console.log(i-2);
+                        document.getElementById(i-2).innerHTML = splitMot[test];
+                        
                     }
                 }
                     
