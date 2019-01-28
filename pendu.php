@@ -1,39 +1,49 @@
-<?php session_start();?>
+<?php
+session_start();
+
+function skip_accents( $str, $charset='utf-8' ) {
+ 
+    $str = htmlentities( $str, ENT_NOQUOTES, $charset );
+    
+    $str = preg_replace( '#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str );
+    $str = preg_replace( '#&([A-za-z]{2})(?:lig);#', '\1', $str );
+    $str = preg_replace( '#&[^;]+;#', '', $str );
+    
+    return $str;
+}
+
+
+
+if (isset($_POST['motAtrouver'])) {
+    $_SESSION['mot'] = skip_accents($_POST['motAtrouver']);
+}
+
+
+$nblettre = strlen($_POST['motAtrouver']);
+$letterArray = array();
+while ($nblettre != 0) {
+    $nblettre--;
+    array_push($letterArray, "_ ");
+}
+$hiddenWord = "";
+$i = 0;
+foreach ($letterArray as $letter) {
+    $hiddenWord .= "<p id=" . $i . ">$letter</p>";
+    $i++;
+}
+echo $hiddenWord;
+?>
 <!DOCTYPE html>
 
 <html>
     <head>
         <meta charset="UTF-8">
         <title></title>
-         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-         
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
     </head>
     <body>
-        <?php
-            if (isset($_POST['motAtrouver'])){
-                $_SESSION['mot']=$_POST['motAtrouver'];
-            }
-            
-            
-        $nblettre = strlen($_POST['motAtrouver']);
-        $letterArray= array();
-        while ($nblettre != 0){
-            $nblettre--;
-            array_push($letterArray, "_ ");
-        }
-        $hiddenWord = "";
-        $i=0;
-        foreach($letterArray as $letter){
-            $hiddenWord .= "<p id=".$i.">$letter</p>";
-            $i++;
-        }
-        echo $hiddenWord;
-        
 
-        
-            
-            
-        ?>
         <div id="requestajax"></div>
         </BR><button type="button" id="A">A</button>
         <button type="button" id="Z">Z</button>
@@ -61,53 +71,70 @@
         <button type="button" id="V">V</button>
         <button type="button" id="B">B</button>
         <button type="button" id="N">N</button></BR>
-        
-        <img id ="img" src="img/pendu0.png" alt="HangmanState" height="100" width="100" ></img>
-    <script>
-j=0;
-    $("button").click(function(){
-        var lettre = $(this).attr('id');
-        var x = false;
-        j++;
-        $.post (
-          "test.php",
-            {
-              letter : $(this).text()
-            },
-            function(data) {
-                
-                var lgtMot = data.length -2 ;
-                var letter = $(this).attr('id');
-                var texte ="";
-                
-                while (lgtMot !=0){
-                    lgtMot--;
-                    texte = texte + "_ ";
-                    
-                }
-                //$('#requestajax').html(texte)
-                var MajMot = data.toUpperCase();
-                var splitMot = MajMot.split("");
-                i=0;
-                for (let test in splitMot){
-                    i++;
-                    if (splitMot[test]==lettre){
 
-                        document.getElementById(i-2).innerHTML = splitMot[test];
-                        console.log(j);
-                        x = true;
-                    } 
-                }
-                if (x ===false){
-                    $('#img').attr('src', 'img/pendu'+j+'.png');
-                }
-                    
-                
-                
-            })
-        })    
-    </script>
-    
+        <img id ="img" src="img/pendu0.png" alt="HangmanState" height="100" width="100" ></img>
+        <script>
+            j = 0;
+            winTcheck = 0;
+            $("button").click(function () {
+                var lettre = $(this).attr('id');
+                var x = false;
+
+                $('#' + lettre + '').attr('disabled', 'true');
+                j++;
+                $.post(
+                        "test.php",
+                        {
+                            letter: $(this).text()
+                        },
+                        function (data) {
+                            var mot = JSON.parse(data);
+                            var lgtMot = mot.length;
+                            var letter = $(this).attr('id');
+                            var texte = "";
+
+                            while (lgtMot != 0) {
+                                lgtMot--;
+                               
+
+                            }
+                            //$('#requestajax').html(texte)
+                            var MajMot = mot.toUpperCase();
+                            var splitMot = MajMot.split("");
+                            i = 0;
+                            b=0;
+                            for (let test in splitMot) {
+                                
+                                if (splitMot[test] == lettre) {
+
+                                    document.getElementById(i).innerHTML = splitMot[test];
+                                    
+                                    b++;
+
+                                    x = true;
+
+                                }
+                                i++;
+                            }
+                            if (x === false) {
+                                $('#img').attr('src', 'img/pendu' + j + '.png');
+                                if (j == 8) {
+                                    $('#requestajax').html('Perdu');
+                                    $('button').attr('disabled', 'true');
+                                }
+                            } else {
+                                winTcheck += b;
+                            }
+                            if (winTcheck === i) {
+                                $('#requestajax').html('Gagné');
+                                $('button').attr('disabled', 'true');
+                            }
+                            console.log(winTcheck);
+
+                        });
+            });
+        </script>
+
     </body>
-    
+
 </html>
