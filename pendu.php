@@ -28,7 +28,8 @@
             $i++;
         }
         echo $hiddenWord;
-        var_dump($letterArray);
+        
+
         
             
             
@@ -59,12 +60,15 @@
         <button type="button" id="C">C</button>
         <button type="button" id="V">V</button>
         <button type="button" id="B">B</button>
-        <button type="button" id="N">N</button>
+        <button type="button" id="N">N</button></BR>
+        
+        <img id ="img" src="img/pendu0.png" alt="HangmanState" height="100" width="100" ></img>
     <script>
-
+j=0;
     $("button").click(function(){
         var lettre = $(this).attr('id');
-
+        var x = false;
+        j++;
         $.post (
           "test.php",
             {
@@ -88,11 +92,14 @@
                 for (let test in splitMot){
                     i++;
                     if (splitMot[test]==lettre){
-                        console.log(splitMot[test]);
-                        console.log(i-2);
+
                         document.getElementById(i-2).innerHTML = splitMot[test];
-                        
-                    }
+                        console.log(j);
+                        x = true;
+                    } 
+                }
+                if (x ===false){
+                    $('#img').attr('src', 'img/pendu'+j+'.png');
                 }
                     
                 
